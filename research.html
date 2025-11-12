@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Research | CardioReference</title>
+    <meta name="description" content="Latest cardiovascular research, emerging therapies, clinical trials, and breakthrough discoveries in cardiology.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'clinical-blue': '#2563EB',
+                        'diagnostic-teal': '#0891B2',
+                        'alert-coral': '#DC2626',
+                        'warning-amber': '#D97706',
+                        'neutral-slate': '#475569',
+                        'light-gray': '#F1F5F9',
+                        'success-green': '#059669',
+                        'deep-navy': '#1E293B',
+                        'ecg-chartreuse': '#84CC16',
+                        'cardiac-purple': '#7C3AED',
+                        'imaging-orange': '#EA580C',
+                        'biomarker-rose': '#E11D48'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .research-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .research-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .research-card.breakthrough {
+            border-left-color: #059669;
+        }
+        
+        .research-card.clinical-trial {
+            border-left-color: #7C3AED;
+        }
+        
+        .research-card.meta-analysis {
+            border-left-color: #D97706;
+        }
+        
+        .research-card.guideline {
+            border-left-color: #2563EB;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #2563EB;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 0.375rem;
+            top: 1.5rem;
+            width: 0.25rem;
+            height: calc(100% - 1rem);
+            background: #e2e8f0;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .breakthrough-badge {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .trial-badge {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .guideline-badge {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .research-filter {
+            transition: all 0.3s ease;
+        }
+        
+        .research-filter.active {
+            background: #2563EB;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-light-gray font-inter">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b-2 border-clinical-blue sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-playfair font-bold text-deep-navy">CardioReference</h1>
+                        <p class="text-xs text-neutral-slate">Professional Cardiology Resource</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Home</a>
+                    <a href="index.html#disorders" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Disorders</a>
+                    <a href="diagnostic-tools.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Diagnostic Tools</a>
+                    <a href="treatment-protocols.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Treatment Protocols</a>
+                    <a href="research.html" class="text-clinical-blue font-semibold">Latest Research</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="search-toggle" class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-white py-16 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-5xl font-playfair font-bold text-deep-navy mb-6">Latest Research & Innovations</h1>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Stay current with breakthrough discoveries, emerging therapies, clinical trials, and 
+                    evidence-based advancements shaping the future of cardiovascular medicine.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Filters -->
+    <section class="py-8 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-4">
+                <button class="research-filter px-6 py-2 rounded-full border border-gray-300 text-neutral-slate hover:bg-gray-100 transition-colors active" data-filter="all">
+                    All Research
+                </button>
+                <button class="research-filter px-6 py-2 rounded-full border border-gray-300 text-neutral-slate hover:bg-gray-100 transition-colors" data-filter="breakthrough">
+                    Breakthrough Studies
+                </button>
+                <button class="research-filter px-6 py-2 rounded-full border border-gray-300 text-neutral-slate hover:bg-gray-100 transition-colors" data-filter="clinical-trial">
+                    Clinical Trials
+                </button>
+                <button class="research-filter px-6 py-2 rounded-full border border-gray-300 text-neutral-slate hover:bg-gray-100 transition-colors" data-filter="meta-analysis">
+                    Meta-Analyses
+                </button>
+                <button class="research-filter px-6 py-2 rounded-full border border-gray-300 text-neutral-slate hover:bg-gray-100 transition-colors" data-filter="guideline">
+                    Guidelines
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Research -->
+    <section class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Featured Research</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    The most impactful recent studies and breakthrough discoveries in cardiovascular medicine.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- SGLT2 Inhibitors in Heart Failure -->
+                <div class="research-card breakthrough bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <span class="breakthrough-badge mr-3">BREAKTHROUGH</span>
+                        <span class="text-sm text-neutral-slate">NEJM, December 2024</span>
+                    </div>
+                    
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">
+                        SGLT2 Inhibitors Across All Heart Failure Phenotypes
+                    </h3>
+                    
+                    <p class="text-neutral-slate mb-6 leading-relaxed">
+                        Comprehensive meta-analysis of EMPEROR-Preserved, DELIVER, and PARAGON-HF trials demonstrates 
+                        consistent benefit of SGLT2 inhibitors across the full spectrum of ejection fraction. 
+                        <strong>25% reduction</strong> in cardiovascular mortality and <strong>30% reduction</strong> 
+                        in heart failure hospitalizations regardless of baseline EF.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-deep-navy mb-2">Key Findings</h4>
+                            <ul class="text-sm text-neutral-slate space-y-1">
+                                <li>• Consistent benefit across EF 15-70%</li>
+                                <li>• No significant interaction by EF</li>
+                                <li>• Benefits evident within 30 days</li>
+                                <li>• Well-tolerated across all groups</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-deep-navy mb-2">Clinical Impact</h4>
+                            <ul class="text-sm text-neutral-slate space-y-1">
+                                <li>• Universal recommendation for all HF patients</li>
+                                <li>• Simplified treatment algorithms</li>
+                                <li>• Cost-effectiveness demonstrated</li>
+                                <li>• Practice-changing evidence</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-neutral-slate">
+                            <strong>Primary Endpoint:</strong> CV death or HF hospitalization
+                        </div>
+                        <button class="bg-clinical-blue hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                            Read Full Study
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- AI-Enhanced ECG Interpretation -->
+                <div class="research-card clinical-trial bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <span class="trial-badge mr-3">CLINICAL TRIAL</span>
+                        <span class="text-sm text-neutral-slate">Lancet Digital Health, November 2024</span>
+                    </div>
+                    
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">
+                        AI-Enhanced ECG Interpretation for Early Detection
+                    </h3>
+                    
+                    <p class="text-neutral-slate mb-6 leading-relaxed">
+                        Machine learning algorithm demonstrates <strong>94% accuracy</strong> in detecting left ventricular dysfunction 
+                        from standard 12-lead ECGs, outperforming expert cardiologists in blinded validation studies. 
+                        FDA breakthrough device designation granted for clinical implementation.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-deep-navy mb-2">Study Design</h4>
+                            <ul class="text-sm text-neutral-slate space-y-1">
+                                <li>• 50,000 ECGs from 15 centers</li>
+                                <li>• Blinded validation cohort</li>
+                                <li>• Multi-ethnic population</li>
+                                <li>• 3-year follow-up period</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-deep-navy mb-2">Performance Metrics</h4>
+                            <ul class="text-sm text-neutral-slate space-y-1">
+                                <li>• Sensitivity: 94.2%</li>
+                                <li>• Specificity: 91.8%</li>
+                                <li>• AUC: 0.96</li>
+                                <li>• vs. Cardiologists: 87% accuracy</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-neutral-slate">
+                            <strong>Phase:</strong> III validation complete
+                        </div>
+                        <button class="bg-cardiac-purple hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                            View Trial Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Timeline -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Research Timeline</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Major milestones and breakthrough discoveries in cardiovascular medicine over the past year.
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-8">
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">December 2024</h3>
+                                <span class="breakthrough-badge">BREAKTHROUGH</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Universal SGLT2 Inhibitor Recommendation</h4>
+                            <p class="text-neutral-slate mb-4">
+                                ESC and ACC simultaneously publish updated guidelines recommending SGLT2 inhibitors 
+                                for all heart failure patients regardless of ejection fraction, based on definitive meta-analysis.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Practice-changing</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">November 2024</h3>
+                                <span class="trial-badge">PHASE III</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">CRISPR Gene Therapy for Familial Hypercholesterolemia</h4>
+                            <p class="text-neutral-slate mb-4">
+                                First-in-human trial of in vivo CRISPR editing shows 70% reduction in LDL-C 
+                                in patients with homozygous familial hypercholesterolemia. Single injection provides sustained benefit.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Revolutionary potential</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">October 2024</h3>
+                                <span class="guideline-badge">GUIDELINE</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Updated Atrial Fibrillation Management</h4>
+                            <p class="text-neutral-slate mb-4">
+                                ACC/AHA/HRS release comprehensive AF guidelines incorporating new anticoagulants, 
+                                catheter ablation recommendations, and digital health integration strategies.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Standard of care update</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">September 2024</h3>
+                                <span class="breakthrough-badge">TECHNOLOGY</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">First Bioresorbable Coronary Stent Approved</h4>
+                            <p class="text-neutral-slate mb-4">
+                                FDA approves first fully bioresorbable coronary stent that dissolves after 2 years, 
+                                leaving no permanent implant. Long-term data shows equivalent outcomes to DES.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Interventional cardiology milestone</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">August 2024</h3>
+                                <span class="trial-badge">PHASE III</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Zilebesiran for Hypertension</h4>
+                            <p class="text-neutral-slate mb-4">
+                                RNA interference therapy targeting angiotensinogen shows sustained blood pressure reduction 
+                                for 6 months with single injection. Promising alternative to daily medications.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Revolutionary treatment approach</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">July 2024</h3>
+                                <span class="breakthrough-badge">BREAKTHROUGH</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Implantable Cardioverter-Defibrillator Leadless System</h4>
+                            <p class="text-neutral-slate mb-4">
+                                First leadless ICD system approved, eliminating lead-related complications. Subcutaneous 
+                                placement reduces infection risk and improves patient comfort.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Device innovation milestone</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">June 2024</h3>
+                                <span class="trial-badge">PHASE II</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Mavacamten for Obstructive HCM</h4>
+                            <p class="text-neutral-slate mb-4">
+                                Cardiac myosin inhibitor demonstrates significant improvement in exercise capacity and 
+                                symptoms in patients with obstructive hypertrophic cardiomyopathy.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Targeted therapy for HCM</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">May 2024</h3>
+                                <span class="guideline-badge">GUIDELINE</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Updated Heart Failure Guidelines</h4>
+                            <p class="text-neutral-slate mb-4">
+                                ESC guidelines incorporate SGLT2 inhibitors as first-line therapy for all HF phenotypes. 
+                                New recommendations for iron deficiency and cardiac rehabilitation.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Practice-changing recommendations</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">April 2024</h3>
+                                <span class="breakthrough-badge">BREAKTHROUGH</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Transcatheter Edge-to-Edge Repair Expansion</h4>
+                            <p class="text-neutral-slate mb-4">
+                                FDA expands MitraClip indication to include secondary mitral regurgitation in heart failure 
+                                patients. Reduces hospitalizations and improves quality of life.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Expanded treatment options</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">March 2024</h3>
+                                <span class="trial-badge">PHASE III</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Finerenone in Heart Failure</h4>
+                            <p class="text-neutral-slate mb-4">
+                                Non-steroidal MRA demonstrates cardiovascular benefit in HFmrEF and HFpEF patients. 
+                                Superior tolerability compared to steroidal MRAs with reduced hyperkalemia risk.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: New therapeutic option</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">February 2024</h3>
+                                <span class="breakthrough-badge">TECHNOLOGY</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">AI-Guided Catheter Ablation</h4>
+                            <p class="text-neutral-slate mb-4">
+                                Machine learning algorithms integrated into electrophysiology systems improve ablation 
+                                success rates for atrial fibrillation. Real-time lesion assessment and gap detection.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Enhanced procedural success</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-playfair font-bold text-deep-navy">January 2024</h3>
+                                <span class="trial-badge">PHASE II</span>
+                            </div>
+                            <h4 class="text-lg font-semibold text-deep-navy mb-2">Pulmonary Artery Denervation</h4>
+                            <p class="text-neutral-slate mb-4">
+                                Novel catheter-based procedure for pulmonary arterial hypertension shows promising 
+                                hemodynamic improvements. Targets sympathetic nervous system in pulmonary circulation.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-neutral-slate">Impact: Potential new therapy for PAH</span>
+                                <button class="text-clinical-blue hover:text-blue-700 font-semibold text-sm">Learn More →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emerging Therapies -->
+    <section class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Emerging Therapies</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Novel treatments and technologies in development that may shape the future of cardiovascular care.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Gene Therapy -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="w-12 h-12 bg-cardiac-purple rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-3">Gene Therapy</h3>
+                    <p class="text-neutral-slate mb-4">
+                        CRISPR-based therapies for familial hypercholesterolemia and inherited cardiomyopathies. 
+                        Single-dose treatments showing sustained clinical benefits.
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Development Stage:</span>
+                            <span class="font-semibold text-cardiac-purple">Phase II/III</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Timeline:</span>
+                            <span class="font-semibold text-deep-navy">2026-2027</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Potential Impact:</span>
+                            <span class="font-semibold text-success-green">High</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stem Cell Therapy -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="w-12 h-12 bg-success-green rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-3">Stem Cell Therapy</h3>
+                    <p class="text-neutral-slate mb-4">
+                        Mesenchymal stem cells and cardiac progenitor cells for heart failure and post-MI recovery. 
+                        Intravenous and direct injection approaches under investigation.
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Development Stage:</span>
+                            <span class="font-semibold text-success-green">Phase II</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Timeline:</span>
+                            <span class="font-semibold text-deep-navy">2025-2028</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Potential Impact:</span>
+                            <span class="font-semibold text-success-green">Moderate</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Digital Therapeutics -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="w-12 h-12 bg-diagnostic-teal rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-3">Digital Therapeutics</h3>
+                    <p class="text-neutral-slate mb-4">
+                        AI-powered mobile applications for cardiac rehabilitation, medication adherence, and 
+                        remote monitoring. FDA-approved digital interventions showing clinical efficacy.
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Development Stage:</span>
+                            <span class="font-semibold text-diagnostic-teal">Available</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Timeline:</span>
+                            <span class="font-semibold text-deep-navy">2024-2025</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Potential Impact:</span>
+                            <span class="font-semibold text-success-green">High</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bioresorbable Stents -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="w-12 h-12 bg-imaging-orange rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-3">Bioresorbable Stents</h3>
+                    <p class="text-neutral-slate mb-4">
+                        Fully absorbable coronary stents that provide temporary scaffolding then dissolve, 
+                        leaving no permanent implant. Long-term vessel healing without foreign body.
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Development Stage:</span>
+                            <span class="font-semibold text-imaging-orange">Approved/Limited</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Timeline:</span>
+                            <span class="font-semibold text-deep-navy">2024-2025</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Potential Impact:</span>
+                            <span class="font-semibold text-success-green">Moderate</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wearable Cardioversion -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="w-12 h-12 bg-alert-coral rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-3">Wearable Cardioversion</h3>
+                    <p class="text-neutral-slate mb-4">
+                        Wearable devices capable of detecting and terminating atrial fibrillation through 
+                        low-energy cardioversion. Continuous monitoring with automatic intervention.
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Development Stage:</span>
+                            <span class="font-semibold text-alert-coral">Phase I</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Timeline:</span>
+                            <span class="font-semibold text-deep-navy">2027-2030</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Potential Impact:</span>
+                            <span class="font-semibold text-success-green">High</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Nanoparticle Drug Delivery -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="w-12 h-12 bg-biomarker-rose rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-3">Nanoparticle Drug Delivery</h3>
+                    <p class="text-neutral-slate mb-4">
+                        Targeted nanoparticle systems for delivering cardiovascular drugs directly to diseased 
+                        vessels. Reduced systemic effects and enhanced therapeutic efficacy.
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Development Stage:</span>
+                            <span class="font-semibold text-biomarker-rose">Preclinical</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Timeline:</span>
+                            <span class="font-semibold text-deep-navy">2028-2032</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-slate">Potential Impact:</span>
+                            <span class="font-semibold text-success-green">High</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clinical Trial Database -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Ongoing Clinical Trials</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Comprehensive database of active cardiovascular clinical trials with detailed protocols and enrollment information.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Trial Search -->
+                <div class="bg-light-gray rounded-2xl p-6">
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Find Clinical Trials</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Condition</label>
+                            <select id="trial-condition" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="">All Conditions</option>
+                                <option value="heart-failure">Heart Failure</option>
+                                <option value="coronary-disease">Coronary Artery Disease</option>
+                                <option value="atrial-fibrillation">Atrial Fibrillation</option>
+                                <option value="hypertension">Hypertension</option>
+                                <option value="dyslipidemia">Dyslipidemia</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Phase</label>
+                            <select id="trial-phase" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="">All Phases</option>
+                                <option value="phase-1">Phase I</option>
+                                <option value="phase-2">Phase II</option>
+                                <option value="phase-3">Phase III</option>
+                                <option value="phase-4">Phase IV</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Intervention Type</label>
+                            <select id="trial-intervention" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="">All Types</option>
+                                <option value="medication">Medication</option>
+                                <option value="device">Device</option>
+                                <option value="procedure">Procedure</option>
+                                <option value="digital">Digital Health</option>
+                            </select>
+                        </div>
+                        
+                        <button id="search-trials" class="w-full bg-clinical-blue hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            Search Trials
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Trial Results -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Active Trials</h3>
+                    
+                    <div id="trial-results" class="space-y-4 max-h-96 overflow-y-auto">
+                        <!-- Trial results will be populated here -->
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-deep-navy">EMPACT-MI</h4>
+                                <span class="trial-badge">Phase III</span>
+                            </div>
+                            <p class="text-sm text-neutral-slate mb-2">
+                                Empagliflozin in patients with acute myocardial infarction and high risk of heart failure
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-neutral-slate">
+                                <span>NCT: 04509674</span>
+                                <span>Estimated completion: 2025</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-deep-navy">CRISPR-FH</h4>
+                                <span class="trial-badge">Phase I/II</span>
+                            </div>
+                            <p class="text-sm text-neutral-slate mb-2">
+                                In vivo CRISPR gene editing for homozygous familial hypercholesterolemia
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-neutral-slate">
+                                <span>NCT: 05398061</span>
+                                <span>Estimated completion: 2026</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-deep-navy">AUGUSTUS-AF</h4>
+                                <span class="trial-badge">Phase III</span>
+                            </div>
+                            <p class="text-sm text-neutral-slate mb-2">
+                                Apixaban vs. warfarin in patients with atrial fibrillation and recent ACS/PCI
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-neutral-slate">
+                                <span>NCT: 05142751</span>
+                                <span>Estimated completion: 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400 mb-3">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                    <p class="text-sm text-gray-400 mb-3">
+                        Designed & Developed by <span class="text-clinical-blue font-semibold">Ritik Dhage</span>
+                    </p>
+                    <p class="text-xs text-gray-500 italic max-w-2xl mx-auto">
+                        ⚠️ <strong>Medical Disclaimer:</strong> This resource is for educational purposes only. The information provided is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals and follow your institution's protocols before making any clinical decisions. In case of medical emergency, contact emergency services immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="research.js"></script>
+</body>
+</html>

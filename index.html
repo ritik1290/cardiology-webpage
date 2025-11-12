@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Cardiology Resource | Professional Medical Reference</title>
+    <meta name="description" content="Complete cardiology reference covering all cardiac disorders, diagnostic tools, treatment protocols, and latest research. Interactive ECG simulator, risk calculators, and evidence-based clinical decision support.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'clinical-blue': '#2563EB',
+                        'diagnostic-teal': '#0891B2',
+                        'alert-coral': '#DC2626',
+                        'warning-amber': '#D97706',
+                        'neutral-slate': '#475569',
+                        'light-gray': '#F1F5F9',
+                        'success-green': '#059669',
+                        'deep-navy': '#1E293B',
+                        'ecg-chartreuse': '#84CC16',
+                        'cardiac-purple': '#7C3AED',
+                        'imaging-orange': '#EA580C',
+                        'biomarker-rose': '#E11D48'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .medical-gradient {
+            background: linear-gradient(135deg, #1E293B 0%, #2563EB 50%, #0891B2 100%);
+        }
+        
+        .cardiac-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(8, 145, 178, 0.1) 0%, transparent 50%);
+        }
+        
+        .disorder-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .disorder-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .search-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+        
+        .hero-text {
+            background: linear-gradient(135deg, #1E293B, #2563EB, #0891B2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stats-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        
+        .ecg-wave {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawECG 3s ease-in-out infinite;
+        }
+        
+        @keyframes drawECG {
+            0% { stroke-dashoffset: 1000; }
+            50% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -1000; }
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-light-gray font-inter">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b-2 border-clinical-blue sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-playfair font-bold text-deep-navy">CardioReference</h1>
+                        <p class="text-xs text-neutral-slate">Professional Cardiology Resource</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#disorders" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Disorders</a>
+                    <a href="diagnostic-tools.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Diagnostic Tools</a>
+                    <a href="treatment-protocols.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Treatment Protocols</a>
+                    <a href="research.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Latest Research</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="search-toggle" class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <button class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="search-container rounded-2xl p-6 w-full max-w-2xl">
+                <div class="flex items-center space-x-4 mb-4">
+                    <svg class="w-6 h-6 text-clinical-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search disorders, symptoms, diagnostic tests, or treatments..."
+                        class="flex-1 text-lg bg-transparent border-none outline-none text-deep-navy placeholder-neutral-slate"
+                        autofocus
+                    >
+                    <button id="search-close" class="text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="search-results" class="space-y-2 max-h-96 overflow-y-auto">
+                    <!-- Search results will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="medical-gradient min-h-screen flex items-center cardiac-pattern relative overflow-hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-5xl lg:text-7xl font-playfair font-bold mb-6 leading-tight">
+                        <span class="hero-text block">Comprehensive</span>
+                        <span class="block">Cardiology</span>
+                        <span class="block text-diagnostic-teal">Reference</span>
+                    </h1>
+                    <p class="text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed">
+                        Complete cardiovascular resource covering all cardiac disorders, diagnostic tools, 
+                        treatment protocols, and latest research with interactive ECG simulation and clinical decision support.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                        <button class="bg-clinical-blue hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                            Explore Disorders
+                        </button>
+                        <button class="border-2 border-white text-white hover:bg-white hover:text-clinical-blue px-8 py-4 rounded-lg font-semibold transition-all duration-300">
+                            Diagnostic Tools
+                        </button>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="stats-counter text-3xl font-bold text-ecg-chartrose mb-2" data-target="150">0</div>
+                            <p class="text-sm text-gray-300">Cardiac Disorders</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-counter text-3xl font-bold text-ecg-chartrose mb-2" data-target="75">0</div>
+                            <p class="text-sm text-gray-300">Diagnostic Tools</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-counter text-3xl font-bold text-ecg-chartrose mb-2" data-target="200">0</div>
+                            <p class="text-sm text-gray-300">Treatment Protocols</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div class="floating-animation">
+                        <img src="resources/cardiac_hero.png" alt="Cardiac System Visualization" class="w-full h-auto rounded-2xl shadow-2xl">
+                    </div>
+                    <!-- Animated ECG Waveform -->
+                    <svg class="absolute -bottom-4 left-0 right-0 h-16" viewBox="0 0 400 60">
+                        <path class="ecg-wave" d="M0,30 L50,30 L60,10 L70,50 L80,30 L150,30 L160,10 L170,50 L180,30 L250,30 L260,10 L270,50 L280,30 L400,30" 
+                              stroke="#84CC16" stroke-width="3" fill="none"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advanced Search & Filter Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Advanced Medical Search</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Find comprehensive information on cardiac disorders, symptoms, diagnostic criteria, and treatment protocols 
+                    with our intelligent search and filtering system.
+                </p>
+            </div>
+            
+            <div class="bg-light-gray rounded-2xl p-8 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="search-container rounded-lg p-4">
+                        <label class="block text-sm font-semibold text-deep-navy mb-2">Search by Symptom</label>
+                        <select id="symptom-filter" class="w-full bg-transparent border-none outline-none text-neutral-slate">
+                            <option value="">All Symptoms</option>
+                            <option value="chest-pain">Chest Pain</option>
+                            <option value="dyspnea">Shortness of Breath</option>
+                            <option value="palpitations">Palpitations</option>
+                            <option value="syncope">Syncope</option>
+                            <option value="fatigue">Fatigue</option>
+                            <option value="edema">Swelling</option>
+                        </select>
+                    </div>
+                    
+                    <div class="search-container rounded-lg p-4">
+                        <label class="block text-sm font-semibold text-deep-navy mb-2">Risk Factors</label>
+                        <select id="risk-filter" class="w-full bg-transparent border-none outline-none text-neutral-slate">
+                            <option value="">All Risk Factors</option>
+                            <option value="age">Age >65</option>
+                            <option value="hypertension">Hypertension</option>
+                            <option value="diabetes">Diabetes</option>
+                            <option value="smoking">Smoking</option>
+                            <option value="family-history">Family History</option>
+                            <option value="obesity">Obesity</option>
+                        </select>
+                    </div>
+                    
+                    <div class="search-container rounded-lg p-4">
+                        <label class="block text-sm font-semibold text-deep-navy mb-2">Diagnostic Tests</label>
+                        <select id="diagnostic-filter" class="w-full bg-transparent border-none outline-none text-neutral-slate">
+                            <option value="">All Tests</option>
+                            <option value="ecg">ECG</option>
+                            <option value="echocardiogram">Echocardiogram</option>
+                            <option value="stress-test">Stress Test</option>
+                            <option value="cardiac-cath">Cardiac Catheterization</option>
+                            <option value="ct-angiogram">CT Angiogram</option>
+                        </select>
+                    </div>
+                    
+                    <div class="search-container rounded-lg p-4">
+                        <label class="block text-sm font-semibold text-deep-navy mb-2">Treatment Type</label>
+                        <select id="treatment-filter" class="w-full bg-transparent border-none outline-none text-neutral-slate">
+                            <option value="">All Treatments</option>
+                            <option value="medications">Medications</option>
+                            <option value="intervention">Interventional</option>
+                            <option value="surgery">Surgical</option>
+                            <option value="lifestyle">Lifestyle</option>
+                            <option value="devices">Device Therapy</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <button id="apply-filters" class="bg-clinical-blue hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cardiac Disorders Grid -->
+    <section id="disorders" class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Comprehensive Cardiac Disorders</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Complete coverage of cardiovascular conditions from common to rare, with detailed clinical presentations, 
+                    diagnostic criteria, and evidence-based treatment protocols.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="disorders-grid">
+                <!-- Disorders will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Features Showcase -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Interactive Clinical Tools</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Advanced diagnostic and educational tools designed for healthcare professionals and medical education.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-light-gray rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-clinical-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">ECG Simulator</h3>
+                    <p class="text-neutral-slate mb-6">
+                        Interactive ECG pattern recognition with real-time waveform generation, diagnostic training, 
+                        and comprehensive rhythm library.
+                    </p>
+                    <button class="bg-clinical-blue hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300" onclick="window.location.href='diagnostic-tools.html'">
+                        Launch Simulator
+                    </button>
+                </div>
+                
+                <div class="bg-light-gray rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-diagnostic-teal rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">Risk Calculators</h3>
+                    <p class="text-neutral-slate mb-6">
+                        Evidence-based risk stratification tools including ASCVD, CHADS2-VASc, and heart failure 
+                        risk assessment with clinical decision support.
+                    </p>
+                    <button class="bg-diagnostic-teal hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300" onclick="window.location.href='diagnostic-tools.html#risk-calculators'">
+                        Calculate Risk
+                    </button>
+                </div>
+                
+                <div class="bg-light-gray rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-cardiac-purple rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">Treatment Protocols</h3>
+                    <p class="text-neutral-slate mb-6">
+                        Evidence-based treatment algorithms, medication dosing guides, and step-by-step 
+                        clinical decision pathways for optimal patient care.
+                    </p>
+                    <button class="bg-cardiac-purple hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300" onclick="window.location.href='treatment-protocols.html'">
+                        View Protocols
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Research Highlights -->
+    <section class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Latest Research & Innovations</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Stay current with emerging therapies, clinical trials, and breakthrough discoveries in cardiovascular medicine.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="w-3 h-3 bg-success-green rounded-full mr-3 pulse-animation"></div>
+                        <span class="text-sm font-semibold text-success-green">BREAKTHROUGH</span>
+                    </div>
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">
+                        SGLT2 Inhibitors in Heart Failure: Expanding Indications
+                    </h3>
+                    <p class="text-neutral-slate mb-6">
+                        Recent clinical trials demonstrate significant benefits of SGLT2 inhibitors across all heart failure 
+                        phenotypes, including preserved ejection fraction. Meta-analysis shows 25% reduction in 
+                        cardiovascular mortality and 30% reduction in heart failure hospitalizations.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-neutral-slate">NEJM, 2024</span>
+                        <button class="text-clinical-blue hover:text-blue-700 font-semibold">Read Full Study →</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="w-3 h-3 bg-imaging-orange rounded-full mr-3 pulse-animation"></div>
+                        <span class="text-sm font-semibold text-imaging-orange">CLINICAL TRIAL</span>
+                    </div>
+                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-4">
+                        AI-Enhanced ECG Interpretation: Diagnostic Accuracy Study
+                    </h3>
+                    <p class="text-neutral-slate mb-6">
+                        Machine learning algorithms demonstrate 94% accuracy in detecting left ventricular dysfunction 
+                        from standard ECGs, outperforming expert cardiologists in blinded studies. 
+                        FDA approval pending for clinical implementation.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-neutral-slate">Lancet Digital Health, 2024</span>
+                        <button class="text-clinical-blue hover:text-blue-700 font-semibold">Read Full Study →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="bg-deep-navy hover:bg-gray-800 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300" onclick="window.location.href='research.html'">
+                    Explore All Research
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400 mb-3">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                    <p class="text-sm text-gray-400 mb-3">
+                        Designed & Developed by <span class="text-clinical-blue font-semibold">Ritik Dhage</span>
+                    </p>
+                    <p class="text-xs text-gray-500 italic max-w-2xl mx-auto">
+                        ⚠️ <strong>Medical Disclaimer:</strong> This resource is for educational purposes only. The information provided is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals and follow your institution's protocols before making any clinical decisions. In case of medical emergency, contact emergency services immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>

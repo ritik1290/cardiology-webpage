@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Tools | CardioReference</title>
+    <meta name="description" content="Interactive diagnostic tools including ECG simulator, risk calculators, and clinical decision support for cardiovascular conditions.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'clinical-blue': '#2563EB',
+                        'diagnostic-teal': '#0891B2',
+                        'alert-coral': '#DC2626',
+                        'warning-amber': '#D97706',
+                        'neutral-slate': '#475569',
+                        'light-gray': '#F1F5F9',
+                        'success-green': '#059669',
+                        'deep-navy': '#1E293B',
+                        'ecg-chartreuse': '#84CC16',
+                        'cardiac-purple': '#7C3AED',
+                        'imaging-orange': '#EA580C',
+                        'biomarker-rose': '#E11D48'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .ecg-container {
+            background: #000;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ecg-grid {
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 25px 25px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .ecg-waveform {
+            stroke: #00ff00;
+            stroke-width: 2;
+            fill: none;
+            filter: drop-shadow(0 0 4px #00ff00);
+        }
+        
+        .calculator-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+            transition: all 0.3s ease;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flowchart-node {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .flowchart-node:hover {
+            transform: scale(1.05);
+        }
+        
+        .flowchart-connection {
+            stroke: #2563EB;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        
+        .tool-section {
+            scroll-margin-top: 100px;
+        }
+    </style>
+</head>
+<body class="bg-light-gray font-inter">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b-2 border-clinical-blue sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-playfair font-bold text-deep-navy">CardioReference</h1>
+                        <p class="text-xs text-neutral-slate">Professional Cardiology Resource</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Home</a>
+                    <a href="index.html#disorders" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Disorders</a>
+                    <a href="diagnostic-tools.html" class="text-clinical-blue font-semibold">Diagnostic Tools</a>
+                    <a href="treatment-protocols.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Treatment Protocols</a>
+                    <a href="research.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Latest Research</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="search-toggle" class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-white py-16 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-5xl font-playfair font-bold text-deep-navy mb-6">Interactive Diagnostic Tools</h1>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Advanced clinical decision support tools including ECG simulation, risk stratification calculators, 
+                    and diagnostic flowcharts for comprehensive cardiovascular assessment.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Navigation -->
+    <section class="bg-white border-b border-gray-200 sticky top-16 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center space-x-8 py-4">
+                <button class="tool-nav-btn text-clinical-blue font-semibold border-b-2 border-clinical-blue pb-2" data-target="ecg-simulator">
+                    ECG Simulator
+                </button>
+                <button class="tool-nav-btn text-neutral-slate hover:text-clinical-blue transition-colors pb-2" data-target="risk-calculators">
+                    Risk Calculators
+                </button>
+                <button class="tool-nav-btn text-neutral-slate hover:text-clinical-blue transition-colors pb-2" data-target="diagnostic-flowcharts">
+                    Diagnostic Flowcharts
+                </button>
+                <button class="tool-nav-btn text-neutral-slate hover:text-clinical-blue transition-colors pb-2" data-target="biomarker-interpreter">
+                    Biomarker Interpreter
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ECG Simulator -->
+    <section id="ecg-simulator" class="tool-section py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Interactive ECG Simulator</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Real-time ECG waveform generation with authentic cardiac rhythms, pattern recognition training, 
+                    and comprehensive interpretation guides.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- ECG Controls -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg">
+                        <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">ECG Controls</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-deep-navy mb-2">Rhythm Type</label>
+                                <select id="rhythm-selector" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-clinical-blue focus:border-transparent">
+                                    <option value="normal-sinus">Normal Sinus Rhythm</option>
+                                    <option value="sinus-tachycardia">Sinus Tachycardia</option>
+                                    <option value="sinus-bradycardia">Sinus Bradycardia</option>
+                                    <option value="atrial-fibrillation">Atrial Fibrillation</option>
+                                    <option value="atrial-flutter">Atrial Flutter</option>
+                                    <option value="ventricular-tachycardia">Ventricular Tachycardia</option>
+                                    <option value="ventricular-fibrillation">Ventricular Fibrillation</option>
+                                    <option value="first-degree-avb">1st Degree AV Block</option>
+                                    <option value="second-degree-avb">2nd Degree AV Block</option>
+                                    <option value="third-degree-avb">3rd Degree AV Block</option>
+                                    <option value="premature-ventricular">Premature Ventricular Contractions</option>
+                                    <option value="supraventricular-tachycardia">Supraventricular Tachycardia</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-deep-navy mb-2">Heart Rate (BPM)</label>
+                                <input type="range" id="heart-rate-slider" min="40" max="180" value="75" class="w-full">
+                                <div class="flex justify-between text-xs text-neutral-slate mt-1">
+                                    <span>40</span>
+                                    <span id="heart-rate-display" class="font-semibold text-clinical-blue">75</span>
+                                    <span>180</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-deep-navy mb-2">Lead Selection</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="lead-btn bg-clinical-blue text-white py-2 px-3 rounded text-sm font-medium" data-lead="II">Lead II</button>
+                                    <button class="lead-btn bg-gray-200 text-neutral-slate py-2 px-3 rounded text-sm font-medium" data-lead="I">Lead I</button>
+                                    <button class="lead-btn bg-gray-200 text-neutral-slate py-2 px-3 rounded text-sm font-medium" data-lead="III">Lead III</button>
+                                    <button class="lead-btn bg-gray-200 text-neutral-slate py-2 px-3 rounded text-sm font-medium" data-lead="aVR">aVR</button>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-4 border-t border-gray-200">
+                                <button id="play-pause-btn" class="w-full bg-success-green hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                    ▶ Play ECG
+                                </button>
+                            </div>
+                            
+                            <div>
+                                <button id="analyze-rhythm-btn" class="w-full bg-diagnostic-teal hover:bg-teal-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                                    Analyze Rhythm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ECG Display -->
+                <div class="lg:col-span-3">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-playfair font-bold text-deep-navy">ECG Display</h3>
+                            <div class="flex items-center space-x-4 text-sm text-neutral-slate">
+                                <span>Paper Speed: 25mm/s</span>
+                                <span>Calibration: 1mV/cm</span>
+                            </div>
+                        </div>
+                        
+                        <div class="ecg-container h-96 mb-6 relative">
+                            <div class="ecg-grid"></div>
+                            <svg id="ecg-svg" class="w-full h-full" viewBox="0 0 800 400">
+                                <defs>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                <path id="ecg-path" class="ecg-waveform" filter="url(#glow)"></path>
+                            </svg>
+                        </div>
+                        
+                        <div id="rhythm-analysis" class="bg-gray-50 rounded-lg p-4 hidden">
+                            <h4 class="font-semibold text-deep-navy mb-2">Rhythm Analysis</h4>
+                            <div id="analysis-content" class="text-sm text-neutral-slate"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Calculators -->
+    <section id="risk-calculators" class="tool-section py-16 bg-white hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Clinical Risk Calculators</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Evidence-based risk stratification tools for cardiovascular conditions with integrated clinical decision support.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- ASCVD Risk Calculator -->
+                <div class="calculator-card rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-clinical-blue rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-playfair font-bold text-deep-navy">ASCVD Risk</h3>
+                            <p class="text-sm text-neutral-slate">10-Year Atherosclerotic CVD</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Age</label>
+                                <input type="number" id="ascvd-age" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="Years" min="20" max="79">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Gender</label>
+                                <select id="ascvd-gender" class="w-full p-2 border border-gray-300 rounded text-sm">
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Total Cholesterol</label>
+                                <input type="number" id="ascvd-tc" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="mg/dL">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">HDL Cholesterol</label>
+                                <input type="number" id="ascvd-hdl" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="mg/dL">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Systolic BP</label>
+                                <input type="number" id="ascvd-sbp" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="mmHg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Diabetes</label>
+                                <select id="ascvd-diabetes" class="w-full p-2 border border-gray-300 rounded text-sm">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Smoking</label>
+                                <select id="ascvd-smoking" class="w-full p-2 border border-gray-300 rounded text-sm">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">BP Treatment</label>
+                                <select id="ascvd-bp-tx" class="w-full p-2 border border-gray-300 rounded text-sm">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button id="calculate-ascvd" class="w-full bg-clinical-blue hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            Calculate ASCVD Risk
+                        </button>
+                        
+                        <div id="ascvd-result" class="hidden bg-gray-50 rounded-lg p-4">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-clinical-blue mb-2" id="ascvd-risk-percent">--</div>
+                                <div class="text-sm text-neutral-slate mb-2">10-Year ASCVD Risk</div>
+                                <div id="ascvd-risk-category" class="text-sm font-semibold"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CHADS2-VASc Calculator -->
+                <div class="calculator-card rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-warning-amber rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-playfair font-bold text-deep-navy">CHADS₂-VASc</h3>
+                            <p class="text-sm text-neutral-slate">Atrial Fibrillation Stroke Risk</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Age</label>
+                                <input type="number" id="chads-age" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="Years">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-deep-navy mb-1">Gender</label>
+                                <select id="chads-gender" class="w-full p-2 border border-gray-300 rounded text-sm">
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-chf" class="mr-2">
+                                <span class="text-sm">Congestive Heart Failure</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-hypertension" class="mr-2">
+                                <span class="text-sm">Hypertension</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-age-65-74" class="mr-2">
+                                <span class="text-sm">Age 65-74 years</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-diabetes" class="mr-2">
+                                <span class="text-sm">Diabetes Mellitus</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-stroke-tia" class="mr-2">
+                                <span class="text-sm">Stroke/TIA/Thromboembolism</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-vascular-disease" class="mr-2">
+                                <span class="text-sm">Vascular Disease</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chads-age-75-plus" class="mr-2">
+                                <span class="text-sm">Age ≥75 years</span>
+                            </label>
+                        </div>
+                        
+                        <button id="calculate-chads" class="w-full bg-warning-amber hover:bg-yellow-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            Calculate CHADS₂-VASc
+                        </button>
+                        
+                        <div id="chads-result" class="hidden bg-gray-50 rounded-lg p-4">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-warning-amber mb-2" id="chads-score">--</div>
+                                <div class="text-sm text-neutral-slate mb-2">CHADS₂-VASc Score</div>
+                                <div id="chads-recommendation" class="text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- BNP Risk Calculator -->
+                <div class="calculator-card rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-biomarker-rose rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-playfair font-bold text-deep-navy">BNP/NT-proBNP</h3>
+                            <p class="text-sm text-neutral-slate">Heart Failure Risk Stratification</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-deep-navy mb-1">BNP Level (pg/mL)</label>
+                            <input type="number" id="bnp-level" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="Enter BNP level">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-deep-navy mb-1">NT-proBNP Level (pg/mL)</label>
+                            <input type="number" id="nt-probnp-level" class="w-full p-2 border border-gray-300 rounded text-sm" placeholder="Enter NT-proBNP level">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-deep-navy mb-1">Age Group</label>
+                            <select id="bnp-age-group" class="w-full p-2 border border-gray-300 rounded text-sm">
+                                <option value="">Select age group</option>
+                                <option value="<50">&lt;50 years</option>
+                                <option value="50-75">50-75 years</option>
+                                <option value=">75">&gt;75 years</option>
+                            </select>
+                        </div>
+                        
+                        <button id="interpret-bnp" class="w-full bg-biomarker-rose hover:bg-red-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            Interpret Biomarkers
+                        </button>
+                        
+                        <div id="bnp-result" class="hidden bg-gray-50 rounded-lg p-4">
+                            <div id="bnp-interpretation" class="text-sm text-neutral-slate"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diagnostic Flowcharts -->
+    <section id="diagnostic-flowcharts" class="tool-section py-16 bg-light-gray hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Diagnostic Flowcharts</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Interactive clinical decision pathways with step-by-step diagnostic algorithms and evidence-based recommendations.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chest Pain Flowchart -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Chest Pain Evaluation</h3>
+                    
+                    <div class="flowchart-container" style="height: 500px; position: relative;">
+                        <svg width="100%" height="100%" viewBox="0 0 400 500">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- Flowchart nodes -->
+                            <rect x="150" y="20" width="100" height="60" rx="10" fill="#2563EB" class="flowchart-node" data-step="1"/>
+                            <text x="200" y="55" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Chest Pain</text>
+                            
+                            <rect x="50" y="120" width="120" height="50" rx="10" fill="#D97706" class="flowchart-node" data-step="2"/>
+                            <text x="110" y="150" text-anchor="middle" fill="white" font-size="11">High Risk Features?</text>
+                            
+                            <rect x="250" y="120" width="100" height="50" rx="10" fill="#059669" class="flowchart-node" data-step="3"/>
+                            <text x="300" y="150" text-anchor="middle" fill="white" font-size="11">Low Risk</text>
+                            
+                            <rect x="150" y="220" width="100" height="50" rx="10" fill="#DC2626" class="flowchart-node" data-step="4"/>
+                            <text x="200" y="250" text-anchor="middle" fill="white" font-size="11">ECG + Troponin</text>
+                            
+                            <rect x="50" y="320" width="120" height="50" rx="10" fill="#7C3AED" class="flowchart-node" data-step="5"/>
+                            <text x="110" y="350" text-anchor="middle" fill="white" font-size="11">STEMI/NSTEMI</text>
+                            
+                            <rect x="250" y="320" width="100" height="50" rx="10" fill="#0891B2" class="flowchart-node" data-step="6"/>
+                            <text x="300" y="350" text-anchor="middle" fill="white" font-size="11">Other Causes</text>
+                            
+                            <!-- Connections -->
+                            <path d="M200 80 L110 120" class="flowchart-connection"/>
+                            <path d="M200 80 L300 120" class="flowchart-connection"/>
+                            <path d="M110 170 L200 220" class="flowchart-connection"/>
+                            <path d="M200 270 L110 320" class="flowchart-connection"/>
+                            <path d="M200 270 L300 320" class="flowchart-connection"/>
+                        </svg>
+                    </div>
+                    
+                    <div id="flowchart-explanation" class="mt-6 p-4 bg-gray-50 rounded-lg hidden">
+                        <h4 class="font-semibold text-deep-navy mb-2">Step-by-Step Guide</h4>
+                        <div id="explanation-content" class="text-sm text-neutral-slate"></div>
+                    </div>
+                </div>
+                
+                <!-- Heart Failure Flowchart -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Heart Failure Diagnosis</h3>
+                    
+                    <div class="flowchart-container" style="height: 500px; position: relative;">
+                        <svg width="100%" height="100%" viewBox="0 0 400 500">
+                            <defs>
+                                <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- Flowchart nodes -->
+                            <rect x="150" y="20" width="100" height="60" rx="10" fill="#2563EB" class="flowchart-node" data-step="hf-1"/>
+                            <text x="200" y="55" text-anchor="middle" fill="white" font-size="12" font-weight="bold">HF Symptoms</text>
+                            
+                            <rect x="150" y="120" width="100" height="50" rx="10" fill="#D97706" class="flowchart-node" data-step="hf-2"/>
+                            <text x="200" y="150" text-anchor="middle" fill="white" font-size="11">NT-proBNP</text>
+                            
+                            <rect x="50" y="220" width="120" height="50" rx="10" fill="#059669" class="flowchart-node" data-step="hf-3"/>
+                            <text x="110" y="250" text-anchor="middle" fill="white" font-size="11">Normal (&lt;125)</text>
+                            
+                            <rect x="250" y="220" width="100" height="50" rx="10" fill="#DC2626" class="flowchart-node" data-step="hf-4"/>
+                            <text x="300" y="250" text-anchor="middle" fill="white" font-size="11">Elevated</text>
+                            
+                            <rect x="150" y="320" width="100" height="50" rx="10" fill="#7C3AED" class="flowchart-node" data-step="hf-5"/>
+                            <text x="200" y="350" text-anchor="middle" fill="white" font-size="11">Echo</text>
+                            
+                            <!-- Connections -->
+                            <path d="M200 80 L200 120" class="flowchart-connection" marker-end="url(#arrowhead2)"/>
+                            <path d="M200 170 L110 220" class="flowchart-connection" marker-end="url(#arrowhead2)"/>
+                            <path d="M200 170 L300 220" class="flowchart-connection" marker-end="url(#arrowhead2)"/>
+                            <path d="M300 270 L200 320" class="flowchart-connection" marker-end="url(#arrowhead2)"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button id="hf-calc-btn" class="w-full bg-diagnostic-teal hover:bg-teal-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                            Calculate NT-proBNP Thresholds
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Biomarker Interpreter -->
+    <section id="biomarker-interpreter" class="tool-section py-16 bg-white hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Cardiac Biomarker Interpreter</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Comprehensive interpretation of cardiac biomarkers with clinical context and diagnostic significance.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Troponin Interpretation -->
+                <div class="bg-light-gray rounded-2xl p-6">
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Troponin I/T</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Troponin I (ng/mL)</label>
+                            <input type="number" id="troponin-i" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter Troponin I value">
+                            <p class="text-xs text-neutral-slate mt-1">Normal: &lt;0.04 ng/mL</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Troponin T (ng/mL)</label>
+                            <input type="number" id="troponin-t" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter Troponin T value">
+                            <p class="text-xs text-neutral-slate mt-1">Normal: &lt;0.01 ng/mL</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Symptom Onset (hours)</label>
+                            <input type="number" id="symptom-onset" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Hours since symptom onset">
+                        </div>
+                        
+                        <button id="interpret-troponin" class="w-full bg-alert-coral hover:bg-red-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            Interpret Troponin
+                        </button>
+                        
+                        <div id="troponin-result" class="hidden bg-white rounded-lg p-4 border-l-4 border-alert-coral">
+                            <div id="troponin-interpretation"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lipid Panel Interpretation -->
+                <div class="bg-light-gray rounded-2xl p-6">
+                    <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Lipid Panel</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Total Cholesterol (mg/dL)</label>
+                            <input type="number" id="total-cholesterol" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter total cholesterol">
+                            <p class="text-xs text-neutral-slate mt-1">Desirable: &lt;200 mg/dL</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">LDL Cholesterol (mg/dL)</label>
+                            <input type="number" id="ldl-cholesterol" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter LDL cholesterol">
+                            <p class="text-xs text-neutral-slate mt-1">Optimal: &lt;100 mg/dL</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">HDL Cholesterol (mg/dL)</label>
+                            <input type="number" id="hdl-cholesterol" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter HDL cholesterol">
+                            <p class="text-xs text-neutral-slate mt-1">Low: &lt;40 (M), &lt;50 (F) mg/dL</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-deep-navy mb-2">Triglycerides (mg/dL)</label>
+                            <input type="number" id="triglycerides" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter triglycerides">
+                            <p class="text-xs text-neutral-slate mt-1">Normal: &lt;150 mg/dL</p>
+                        </div>
+                        
+                        <button id="interpret-lipids" class="w-full bg-success-green hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                            Interpret Lipid Panel
+                        </button>
+                        
+                        <div id="lipids-result" class="hidden bg-white rounded-lg p-4 border-l-4 border-success-green">
+                            <div id="lipids-interpretation"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400 mb-3">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                    <p class="text-sm text-gray-400 mb-3">
+                        Designed & Developed by <span class="text-clinical-blue font-semibold">Ritik Dhage</span>
+                    </p>
+                    <p class="text-xs text-gray-500 italic max-w-2xl mx-auto">
+                        ⚠️ <strong>Medical Disclaimer:</strong> This resource is for educational purposes only. The information provided is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals and follow your institution's protocols before making any clinical decisions. In case of medical emergency, contact emergency services immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="diagnostic-tools.js"></script>
+</body>
+</html>

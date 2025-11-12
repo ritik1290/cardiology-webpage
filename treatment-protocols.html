@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treatment Protocols | CardioReference</title>
+    <meta name="description" content="Evidence-based treatment protocols, medication algorithms, and clinical guidelines for cardiovascular conditions.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'clinical-blue': '#2563EB',
+                        'diagnostic-teal': '#0891B2',
+                        'alert-coral': '#DC2626',
+                        'warning-amber': '#D97706',
+                        'neutral-slate': '#475569',
+                        'light-gray': '#F1F5F9',
+                        'success-green': '#059669',
+                        'deep-navy': '#1E293B',
+                        'ecg-chartreuse': '#84CC16',
+                        'cardiac-purple': '#7C3AED',
+                        'imaging-orange': '#EA580C',
+                        'biomarker-rose': '#E11D48'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .protocol-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .protocol-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .protocol-card.active {
+            border-left-color: #2563EB;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .medication-tier {
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .medication-tier.first-line {
+            border-color: #059669;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        }
+        
+        .medication-tier.second-line {
+            border-color: #D97706;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
+        
+        .medication-tier.third-line {
+            border-color: #DC2626;
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        }
+        
+        .dosing-calculator {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+        }
+        
+        .treatment-step {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .treatment-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #2563EB;
+        }
+        
+        .treatment-step::after {
+            content: '';
+            position: absolute;
+            left: 0.375rem;
+            top: 1.5rem;
+            width: 0.25rem;
+            height: calc(100% - 1rem);
+            background: #e2e8f0;
+        }
+        
+        .treatment-step:last-child::after {
+            display: none;
+        }
+        
+        .evidence-badge {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-light-gray font-inter">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b-2 border-clinical-blue sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-playfair font-bold text-deep-navy">CardioReference</h1>
+                        <p class="text-xs text-neutral-slate">Professional Cardiology Resource</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Home</a>
+                    <a href="index.html#disorders" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Disorders</a>
+                    <a href="diagnostic-tools.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Diagnostic Tools</a>
+                    <a href="treatment-protocols.html" class="text-clinical-blue font-semibold">Treatment Protocols</a>
+                    <a href="research.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Latest Research</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="search-toggle" class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-white py-16 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-5xl font-playfair font-bold text-deep-navy mb-6">Evidence-Based Treatment Protocols</h1>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Comprehensive therapeutic algorithms, medication guidelines, and clinical protocols based on 
+                    latest cardiovascular research and professional society recommendations.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Treatment Categories -->
+    <section class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Protocol Navigation -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+                        <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Treatment Categories</h3>
+                        
+                        <div class="space-y-2">
+                            <button class="protocol-nav-btn w-full text-left p-3 rounded-lg bg-clinical-blue text-white font-semibold" data-protocol="heart-failure">
+                                Heart Failure
+                            </button>
+                            <button class="protocol-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-protocol="coronary-disease">
+                                Coronary Artery Disease
+                            </button>
+                            <button class="protocol-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-protocol="hypertension">
+                                Hypertension
+                            </button>
+                            <button class="protocol-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-protocol="atrial-fibrillation">
+                                Atrial Fibrillation
+                            </button>
+                            <button class="protocol-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-protocol="dyslipidemia">
+                                Dyslipidemia
+                            </button>
+                            <button class="protocol-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-protocol="acute-coronary-syndrome">
+                                Acute Coronary Syndrome
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Protocol Content -->
+                <div class="lg:col-span-3">
+                    <div id="protocol-content">
+                        <!-- Heart Failure Protocol -->
+                        <div id="heart-failure-protocol" class="protocol-content">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-3xl font-playfair font-bold text-deep-navy">Heart Failure Treatment Protocol</h2>
+                                    <span class="evidence-badge">ACC/AHA 2022 Guidelines</span>
+                                </div>
+                                
+                                <!-- HFrEF Treatment Algorithm -->
+                                <div class="mb-8">
+                                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-6">HFrEF (EF ≤ 40%) Treatment Algorithm</h3>
+                                    
+                                    <div class="space-y-6">
+                                        <!-- First-line Therapy -->
+                                        <div class="medication-tier first-line p-6">
+                                            <div class="flex items-center mb-4">
+                                                <div class="w-8 h-8 bg-success-green rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+                                                <h4 class="text-xl font-semibold text-deep-navy">First-Line Therapy</h4>
+                                                <span class="ml-auto text-sm bg-success-green text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">ACE Inhibitors</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• Enalapril: 2.5-20mg BID</li>
+                                                        <li>• Ramipril: 1.25-10mg daily</li>
+                                                        <li>• Lisinopril: 5-40mg daily</li>
+                                                        <li>• Target: Max tolerated evidence-based dose</li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">Beta-Blockers</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• Carvedilol: 3.125-25mg BID</li>
+                                                        <li>• Metoprolol succinate: 12.5-200mg daily</li>
+                                                        <li>• Bisoprolol: 1.25-10mg daily</li>
+                                                        <li>• Titrate to max tolerated dose</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                                                <h6 class="font-semibold text-clinical-blue mb-2">Clinical Pearls</h6>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Start ACE inhibitor first, then add beta-blocker once stable</li>
+                                                    <li>• Titrate both medications to maximum tolerated evidence-based doses</li>
+                                                    <li>• Monitor renal function and electrolytes with each dose change</li>
+                                                    <li>• Continue diuretics as needed for symptom control</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Second-line Therapy -->
+                                        <div class="medication-tier second-line p-6">
+                                            <div class="flex items-center mb-4">
+                                                <div class="w-8 h-8 bg-warning-amber rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
+                                                <h4 class="text-xl font-semibold text-deep-navy">Second-Line Therapy</h4>
+                                                <span class="ml-auto text-sm bg-warning-amber text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">MRA</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• Spironolactone: 25mg daily</li>
+                                                        <li>• Eplerenone: 25mg daily</li>
+                                                        <li>• Monitor K+ and creatinine</li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">SGLT2 Inhibitors</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• Dapagliflozin: 10mg daily</li>
+                                                        <li>• Empagliflozin: 10mg daily</li>
+                                                        <li>• Reduces CV death and HF hospitalization</li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">ARNI Alternative</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• Sacubitril/valsartan: 24/26mg BID</li>
+                                                        <li>• Superior to ACE inhibitors</li>
+                                                        <li>• 36-hour washout required</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Third-line Therapy -->
+                                        <div class="medication-tier third-line p-6">
+                                            <div class="flex items-center mb-4">
+                                                <div class="w-8 h-8 bg-alert-coral rounded-full flex items-center justify-center text-white font-bold mr-3">3</div>
+                                                <h4 class="text-xl font-semibold text-deep-navy">Third-Line/Specialist Referral</h4>
+                                                <span class="ml-auto text-sm bg-alert-coral text-white px-2 py-1 rounded">Class IIa Recommendation</span>
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">Ivabradine</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• Starting: 5mg BID</li>
+                                                        <li>• Target: 7.5mg BID</li>
+                                                        <li>• HR ≥75 bpm, sinus rhythm</li>
+                                                        <li>• Reduces CV death and HF hospitalization</li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="bg-white p-4 rounded-lg">
+                                                    <h5 class="font-semibold text-deep-navy mb-2">Device Therapy</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• ICD if EF ≤35% and NYHA II-III</li>
+                                                        <li>• CRT if QRS ≥150ms and LBBB</li>
+                                                        <li>• Consider cardiac transplantation</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- HFpEF Treatment -->
+                                <div class="mb-8">
+                                    <h3 class="text-2xl font-playfair font-bold text-deep-navy mb-6">HFpEF (EF ≥ 50%) Treatment</h3>
+                                    
+                                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <h4 class="font-semibold text-deep-navy mb-3">Pharmacologic Management</h4>
+                                                <ul class="space-y-2 text-sm text-neutral-slate">
+                                                    <li class="flex items-start">
+                                                        <span class="w-2 h-2 bg-clinical-blue rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                                        <div>
+                                                            <strong>Diuretics:</strong> For volume management and symptom relief
+                                                        </div>
+                                                    </li>
+                                                    <li class="flex items-start">
+                                                        <span class="w-2 h-2 bg-clinical-blue rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                                        <div>
+                                                            <strong>SGLT2 Inhibitors:</strong> Dapagliflozin or empagliflozin reduce HF hospitalizations
+                                                        </div>
+                                                    </li>
+                                                    <li class="flex items-start">
+                                                        <span class="w-2 h-2 bg-clinical-blue rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                                        <div>
+                                                            <strong>ARB/ARNI:</strong> Consider for hypertension management
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div>
+                                                <h4 class="font-semibold text-deep-navy mb-3">Comorbidity Management</h4>
+                                                <ul class="space-y-2 text-sm text-neutral-slate">
+                                                    <li class="flex items-start">
+                                                        <span class="w-2 h-2 bg-warning-amber rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                                        <div>
+                                                            <strong>Hypertension:</strong> Target &lt;130/80 mmHg
+                                                        </div>
+                                                    </li>
+                                                    <li class="flex items-start">
+                                                        <span class="w-2 h-2 bg-warning-amber rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                                        <div>
+                                                            <strong>Diabetes:</strong> Optimize glycemic control
+                                                        </div>
+                                                    </li>
+                                                    <li class="flex items-start">
+                                                        <span class="w-2 h-2 bg-warning-amber rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                                        <div>
+                                                            <strong>Atrial Fibrillation:</strong> Rate and rhythm control
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coronary Artery Disease Protocol -->
+                        <div id="coronary-disease-protocol" class="protocol-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-3xl font-playfair font-bold text-deep-navy">Coronary Artery Disease Treatment</h2>
+                                    <span class="evidence-badge">AHA/ACC 2021 Guidelines</span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <div>
+                                        <h3 class="text-xl font-playfair font-bold text-deep-navy mb-4">Medical Management</h3>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="medication-tier first-line p-4">
+                                                <h4 class="font-semibold text-deep-navy mb-2">Antiplatelet Therapy</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Aspirin 81mg daily (lifelong)</li>
+                                                    <li>• Clopidogrel 75mg daily if aspirin contraindicated</li>
+                                                    <li>• Dual antiplatelet therapy post-PCI/stent</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="medication-tier first-line p-4">
+                                                <h4 class="font-semibold text-deep-navy mb-2">Statin Therapy</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• High-intensity statin for all patients</li>
+                                                    <li>• Atorvastatin 40-80mg daily</li>
+                                                    <li>• Rosuvastatin 20-40mg daily</li>
+                                                    <li>• Target LDL-C &lt;70 mg/dL</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="medication-tier second-line p-4">
+                                                <h4 class="font-semibold text-deep-navy mb-2">Beta-Blockers</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Metoprolol succinate 25-200mg daily</li>
+                                                    <li>• Carvedilol 3.125-25mg BID</li>
+                                                    <li>• Titrate to resting HR 55-60 bpm</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h3 class="text-xl font-playfair font-bold text-deep-navy mb-4">Revascularization Strategy</h3>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="bg-gray-50 p-4 rounded-lg">
+                                                <h4 class="font-semibold text-deep-navy mb-2">PCI (Percutaneous Coronary Intervention)</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Primary PCI for STEMI within 90 minutes</li>
+                                                    <li>• Elective PCI for high-risk anatomy</li>
+                                                    <li>• Drug-eluting stents preferred</li>
+                                                    <li>• Dual antiplatelet therapy 6-12 months</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-gray-50 p-4 rounded-lg">
+                                                <h4 class="font-semibold text-deep-navy mb-2">CABG (Coronary Artery Bypass Graft)</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Left main disease (&gt;50% stenosis)</li>
+                                                    <li>• Three-vessel disease with diabetes</li>
+                                                    <li>• Two-vessel disease with proximal LAD</li>
+                                                    <li>• SYNTAX score &gt;22</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hypertension Protocol -->
+                        <div id="hypertension-protocol" class="protocol-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-3xl font-playfair font-bold text-deep-navy">Hypertension Treatment Protocol</h2>
+                                    <span class="evidence-badge">AHA/ACC 2017 Guidelines</span>
+                                </div>
+                                
+                                <div class="space-y-8">
+                                    <div class="treatment-tier first-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-success-green rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Lifestyle Modifications</h4>
+                                            <span class="ml-auto text-sm bg-success-green text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Dietary Changes</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• DASH diet: 8-14 mmHg reduction</li>
+                                                    <li>• Sodium restriction: &lt;2,300mg daily</li>
+                                                    <li>• Limit alcohol: ≤2 drinks (men), ≤1 (women)</li>
+                                                    <li>• Increase potassium intake</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Physical Activity</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Aerobic exercise: 30 min, 5-7 days/week</li>
+                                                    <li>• Resistance training: 2-3 days/week</li>
+                                                    <li>• Weight loss if overweight</li>
+                                                    <li>• Smoking cessation</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="treatment-tier second-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-warning-amber rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Pharmacologic Therapy</h4>
+                                            <span class="ml-auto text-sm bg-warning-amber text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">First-Line Agents</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Thiazide diuretics</li>
+                                                    <li>• ACE inhibitors</li>
+                                                    <li>• ARBs</li>
+                                                    <li>• Calcium channel blockers</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Second-Line Agents</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Beta-blockers</li>
+                                                    <li>• Aldosterone antagonists</li>
+                                                    <li>• Alpha-blockers</li>
+                                                    <li>• Direct vasodilators</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Target Goals</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• &lt;130/80 mmHg (most patients)</li>
+                                                    <li>• &lt;130/80 mmHg (diabetes)</li>
+                                                    <li>• &lt;120/80 mmHg (high cardiovascular risk)</li>
+                                                    <li>• Individualized targets</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Atrial Fibrillation Protocol -->
+                        <div id="atrial-fibrillation-protocol" class="protocol-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-3xl font-playfair font-bold text-deep-navy">Atrial Fibrillation Treatment Protocol</h2>
+                                    <span class="evidence-badge">AHA/ACC/HRS 2023 Guidelines</span>
+                                </div>
+                                
+                                <div class="space-y-8">
+                                    <div class="treatment-tier first-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-success-green rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Rate vs Rhythm Control</h4>
+                                            <span class="ml-auto text-sm bg-success-green text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Rate Control</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Beta-blockers (first-line)</li>
+                                                    <li>• Non-DHP calcium channel blockers</li>
+                                                    <li>• Digoxin (if HFrEF)</li>
+                                                    <li>• Target HR &lt;110 bpm (lenient)</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Rhythm Control</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Consider if symptomatic</li>
+                                                    <li>• Antiarrhythmic drugs</li>
+                                                    <li>• Catheter ablation</li>
+                                                    <li>• Electrical cardioversion</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="treatment-tier second-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-warning-amber rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Anticoagulation</h4>
+                                            <span class="ml-auto text-sm bg-warning-amber text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">CHA₂DS₂-VASc Score</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Score ≥2: Anticoagulation</li>
+                                                    <li>• Score 1: Consider anticoagulation</li>
+                                                    <li>• Score 0: No anticoagulation</li>
+                                                    <li>• Assess bleeding risk</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Anticoagulant Options</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• DOACs (first-line)</li>
+                                                    <li>• Warfarin (if mechanical valve)</li>
+                                                    <li>• Left atrial appendage closure</li>
+                                                    <li>• Aspirin (limited role)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dyslipidemia Protocol -->
+                        <div id="dyslipidemia-protocol" class="protocol-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-3xl font-playfair font-bold text-deep-navy">Dyslipidemia Treatment Protocol</h2>
+                                    <span class="evidence-badge">AHA/ACC 2018 Guidelines</span>
+                                </div>
+                                
+                                <div class="space-y-8">
+                                    <div class="treatment-tier first-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-success-green rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Statin Therapy</h4>
+                                            <span class="ml-auto text-sm bg-success-green text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">High-Intensity</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Atorvastatin 40-80mg</li>
+                                                    <li>• Rosuvastatin 20-40mg</li>
+                                                    <li>• LDL-C reduction ≥50%</li>
+                                                    <li>• ASCVD risk ≥20%</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Moderate-Intensity</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Atorvastatin 10-20mg</li>
+                                                    <li>• Rosuvastatin 5-10mg</li>
+                                                    <li>• Simvastatin 20-40mg</li>
+                                                    <li>• LDL-C reduction 30-49%</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Lifestyle</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Heart-healthy diet</li>
+                                                    <li>• Regular exercise</li>
+                                                    <li>• Weight management</li>
+                                                    <li>• Smoking cessation</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="treatment-tier second-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-warning-amber rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Non-Statin Therapies</h4>
+                                            <span class="ml-auto text-sm bg-warning-amber text-white px-2 py-1 rounded">Class IIa Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">PCSK9 Inhibitors</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Evolocumab 140mg every 2 weeks</li>
+                                                    <li>• Alirocumab 75-150mg every 2 weeks</li>
+                                                    <li>• LDL-C reduction 50-60%</li>
+                                                    <li>• Familial hypercholesterolemia</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">Other Agents</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Ezetimibe</li>
+                                                    <li>• Bempedoic acid</li>
+                                                    <li>• Bile acid sequestrants</li>
+                                                    <li>• Fibrates (if high triglycerides)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Acute Coronary Syndrome Protocol -->
+                        <div id="acute-coronary-syndrome-protocol" class="protocol-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-3xl font-playfair font-bold text-deep-navy">Acute Coronary Syndrome Protocol</h2>
+                                    <span class="evidence-badge">AHA/ACC 2020 Guidelines</span>
+                                </div>
+                                
+                                <div class="space-y-8">
+                                    <div class="treatment-tier emergency p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-alert-coral rounded-full flex items-center justify-center text-white font-bold mr-3">🚨</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Immediate Management</h4>
+                                            <span class="ml-auto text-sm bg-alert-coral text-white px-2 py-1 rounded">Emergency</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">STEMI (ST-Elevation MI)</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Primary PCI within 90 minutes</li>
+                                                    <li>• Dual antiplatelet therapy</li>
+                                                    <li>• Anticoagulation</li>
+                                                    <li>• Statin therapy</li>
+                                                    <li>• Beta-blocker</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-white p-4 rounded-lg">
+                                                <h5 class="font-semibold text-deep-navy mb-2">NSTEMI/Unstable Angina</h5>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Risk stratification (TIMI, GRACE)</li>
+                                                    <li>• Early invasive if high risk</li>
+                                                    <li>• Conservative if low risk</li>
+                                                    <li>• Dual antiplatelet therapy</li>
+                                                    <li>• Anticoagulation</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="treatment-tier first-line p-6">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-8 h-8 bg-success-green rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+                                            <h4 class="text-xl font-semibold text-deep-navy">Antiplatelet Therapy</h4>
+                                            <span class="ml-auto text-sm bg-success-green text-white px-2 py-1 rounded">Class I Recommendation</span>
+                                        </div>
+                                        
+                                        <div class="bg-white p-4 rounded-lg">
+                                            <h5 class="font-semibold text-deep-navy mb-2">Dual Antiplatelet Therapy</h5>
+                                            <ul class="text-sm text-neutral-slate space-y-1">
+                                                <li>• Aspirin: 162-325mg loading, then 81mg daily</li>
+                                                <li>• P2Y12 inhibitor: clopidogrel, ticagrelor, or prasugrel</li>
+                                                <li>• Continue for 12 months minimum</li>
+                                                <li>• Consider longer duration if high bleeding risk</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional protocols would be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dosing Calculator -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-deep-navy mb-4">Interactive Dosing Calculator</h2>
+                <p class="text-xl text-neutral-slate max-w-3xl mx-auto">
+                    Calculate appropriate medication dosing based on patient parameters and clinical guidelines.
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="dosing-calculator rounded-2xl p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Patient Parameters</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-deep-navy mb-2">Age (years)</label>
+                                    <input type="number" id="calc-age" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter age">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-deep-navy mb-2">Weight (kg)</label>
+                                    <input type="number" id="calc-weight" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter weight">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-deep-navy mb-2">Creatinine (mg/dL)</label>
+                                    <input type="number" id="calc-creatinine" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter creatinine">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-deep-navy mb-2">Indication</label>
+                                    <select id="calc-indication" class="w-full p-3 border border-gray-300 rounded-lg">
+                                        <option value="">Select indication</option>
+                                        <option value="hfref">HFrEF (EF ≤40%)</option>
+                                        <option value="hfpef">HFpEF (EF ≥50%)</option>
+                                        <option value="cad">Stable CAD</option>
+                                        <option value="acs">Acute Coronary Syndrome</option>
+                                        <option value="af">Atrial Fibrillation</option>
+                                    </select>
+                                </div>
+                                
+                                <button id="calculate-dosing" class="w-full bg-clinical-blue hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors">
+                                    Calculate Recommendations
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Dosing Recommendations</h3>
+                            
+                            <div id="dosing-results" class="space-y-4">
+                                <div class="text-center text-neutral-slate py-8">
+                                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <p>Enter patient parameters to see dosing recommendations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400 mb-3">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                    <p class="text-sm text-gray-400 mb-3">
+                        Designed & Developed by <span class="text-clinical-blue font-semibold">Ritik Dhage</span>
+                    </p>
+                    <p class="text-xs text-gray-500 italic max-w-2xl mx-auto">
+                        ⚠️ <strong>Medical Disclaimer:</strong> This resource is for educational purposes only. The information provided is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals and follow your institution's protocols before making any clinical decisions. In case of medical emergency, contact emergency services immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="treatment-protocols.js"></script>
+</body>
+</html>
