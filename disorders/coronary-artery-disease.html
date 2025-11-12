@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coronary Artery Disease | CardioReference</title>
+    <meta name="description" content="Comprehensive information on Coronary Artery Disease including clinical presentation, diagnosis, treatment, and latest research.">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'clinical-blue': '#2563EB',
+                        'diagnostic-teal': '#0891B2',
+                        'alert-coral': '#DC2626',
+                        'warning-amber': '#D97706',
+                        'neutral-slate': '#475569',
+                        'light-gray': '#F1F5F9',
+                        'success-green': '#059669',
+                        'deep-navy': '#1E293B',
+                        'ecg-chartreuse': '#84CC16',
+                        'cardiac-purple': '#7C3AED',
+                        'imaging-orange': '#EA580C',
+                        'biomarker-rose': '#E11D48'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .section-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .section-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-card.active {
+            border-left-color: #2563EB;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="bg-light-gray font-inter">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b-2 border-clinical-blue sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-playfair font-bold text-deep-navy">CardioReference</h1>
+                        <p class="text-xs text-neutral-slate">Professional Cardiology Resource</p>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="../index.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Home</a>
+                    <a href="../index.html#disorders" class="text-clinical-blue font-semibold">Disorders</a>
+                    <a href="../diagnostic-tools.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Diagnostic Tools</a>
+                    <a href="../treatment-protocols.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Treatment Protocols</a>
+                    <a href="../research.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Latest Research</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button id="search-toggle" class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-nav sticky top-16 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center space-x-2 py-3">
+                <a href="../index.html" class="text-neutral-slate hover:text-clinical-blue text-sm">Home</a>
+                <svg class="w-4 h-4 text-neutral-slate" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+                <a href="../index.html#disorders" class="text-neutral-slate hover:text-clinical-blue text-sm">Disorders</a>
+                <svg class="w-4 h-4 text-neutral-slate" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+                <span class="text-clinical-blue text-sm font-medium">Coronary Artery Disease</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="bg-white py-12 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-clinical-blue text-white mr-3">
+                            Ischemic Heart Disease
+                        </span>
+                        <span class="text-sm text-neutral-slate">Very Common • High Severity</span>
+                    </div>
+
+                    <h1 class="text-4xl lg:text-5xl font-playfair font-bold text-deep-navy mb-6">
+                        Coronary Artery Disease
+                    </h1>
+
+                    <p class="text-xl text-neutral-slate leading-relaxed mb-6">
+                        Atherosclerotic narrowing of coronary arteries leading to myocardial ischemia. Includes stable angina, acute coronary syndromes, and silent ischemia.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-light-gray rounded-lg p-4">
+                            <div class="text-2xl font-bold text-clinical-blue mb-1">6.2%</div>
+                            <div class="text-sm text-neutral-slate">Prevalence</div>
+                        </div>
+                        <div class="bg-light-gray rounded-lg p-4">
+                            <div class="text-2xl font-bold text-clinical-blue mb-1">365,000</div>
+                            <div class="text-sm text-neutral-slate">Annual Impact</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <img src="../resources/coronary_disease.png" alt="Coronary Artery Disease" class="w-full h-auto rounded-2xl shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Navigation Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-32">
+                        <h3 class="text-xl font-playfair font-bold text-deep-navy mb-6">Contents</h3>
+
+                        <div class="space-y-2">
+                            <button class="section-nav-btn w-full text-left p-3 rounded-lg bg-clinical-blue text-white font-semibold" data-section="overview">
+                                Overview
+                            </button>
+                            <button class="section-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-section="clinical-presentation">
+                                Clinical Presentation
+                            </button>
+                            <button class="section-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-section="diagnosis">
+                                Diagnosis
+                            </button>
+                            <button class="section-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-section="treatment">
+                                Treatment
+                            </button>
+                            <button class="section-nav-btn w-full text-left p-3 rounded-lg text-neutral-slate hover:bg-gray-100 transition-colors" data-section="prognosis">
+                                Prognosis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="lg:col-span-3">
+                    <div id="disorder-content">
+                        <!-- Overview Section -->
+                        <div id="overview-section" class="section-content">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Overview</h2>
+
+                                <div class="prose prose-lg max-w-none">
+                                    <p class="text-neutral-slate leading-relaxed mb-6">
+                                        Atherosclerotic narrowing of coronary arteries leading to myocardial ischemia. Includes stable angina, acute coronary syndromes, and silent ischemia. This comprehensive resource provides evidence-based information 
+                                        on clinical presentation, diagnosis, treatment, and management of Coronary Artery Disease.
+                                    </p>
+
+                                    <div class="bg-clinical-blue bg-opacity-10 border-l-4 border-clinical-blue p-6 rounded-r-lg mb-6">
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-3">Key Facts</h3>
+                                        <ul class="space-y-2 text-neutral-slate">
+                                            <li>• 6.2% of adults (18.2 million) affected population</li>
+                                            <li>• 365,000 deaths annually annual impact</li>
+                                            <li>• Very Common prevalence in clinical practice</li>
+                                            <li>• High clinical severity classification</li>
+                                        </ul>
+                                    </div>
+
+                                    <p class="text-neutral-slate leading-relaxed mb-6">
+                                        This condition falls under the category of Ischemic Heart Disease and requires comprehensive 
+                                        evaluation and management. Early recognition and appropriate treatment are crucial for optimal outcomes.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clinical Presentation Section -->
+                        <div id="clinical-presentation-section" class="section-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Clinical Presentation</h2>
+
+                                <div class="space-y-6">
+                                    <h3 class="text-xl font-semibold text-deep-navy mb-4">Typical Symptoms</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold text-deep-navy mb-2">Chest Pain</h4><p class="text-sm text-neutral-slate">Detailed clinical description and assessment criteria for this symptom.</p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold text-deep-navy mb-2">Dyspnea</h4><p class="text-sm text-neutral-slate">Detailed clinical description and assessment criteria for this symptom.</p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold text-deep-navy mb-2">Fatigue</h4><p class="text-sm text-neutral-slate">Detailed clinical description and assessment criteria for this symptom.</p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold text-deep-navy mb-2">Palpitations</h4><p class="text-sm text-neutral-slate">Detailed clinical description and assessment criteria for this symptom.</p></div>
+                                    </div>
+
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                                        <h4 class="font-semibold text-warning-amber mb-2">Atypical Presentations</h4>
+                                        <p class="text-sm text-neutral-slate">
+                                            Some patients may present with atypical symptoms or have comorbid conditions that 
+                                            mask classic presentations. Clinical judgment and comprehensive evaluation are essential.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis Section -->
+                        <div id="diagnosis-section" class="section-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Diagnosis</h2>
+
+                                <div class="space-y-6">
+                                    <h3 class="text-xl font-semibold text-deep-navy mb-4">Diagnostic Approach</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-gray-50 p-4 rounded-lg">
+                                            <h4 class="font-semibold text-deep-navy mb-2">Clinical Assessment</h4>
+                                            <ul class="text-sm text-neutral-slate space-y-1">
+                                                <li>• Detailed medical history</li>
+                                                <li>• Physical examination</li>
+                                                <li>• Symptom evaluation</li>
+                                                <li>• Risk factor assessment</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="bg-gray-50 p-4 rounded-lg">
+                                            <h4 class="font-semibold text-deep-navy mb-2">Diagnostic Tests</h4>
+                                            <ul class="text-sm text-neutral-slate space-y-1">
+                                                <li>• Ecg</li><li>• Stress Test</li><li>• Cardiac Cath</li><li>• Ct Angiogram</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                                        <h4 class="font-semibold text-clinical-blue mb-2">Evidence-Based Guidelines</h4>
+                                        <p class="text-sm text-neutral-slate">
+                                            Diagnosis and management should follow current clinical practice guidelines and 
+                                            evidence-based recommendations from major cardiovascular societies.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Treatment Section -->
+                        <div id="treatment-section" class="section-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Treatment</h2>
+
+                                <div class="space-y-6">
+                                    <h3 class="text-xl font-semibold text-deep-navy mb-4">Treatment Modalities</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-success-green bg-opacity-10 border border-success-green rounded-lg p-4"><h4 class="font-semibold text-success-green mb-2">Medications</h4><p class="text-sm text-neutral-slate">Evidence-based therapeutic approach with specific protocols and monitoring requirements.</p></div><div class="bg-success-green bg-opacity-10 border border-success-green rounded-lg p-4"><h4 class="font-semibold text-success-green mb-2">Intervention</h4><p class="text-sm text-neutral-slate">Evidence-based therapeutic approach with specific protocols and monitoring requirements.</p></div><div class="bg-success-green bg-opacity-10 border border-success-green rounded-lg p-4"><h4 class="font-semibold text-success-green mb-2">Surgery</h4><p class="text-sm text-neutral-slate">Evidence-based therapeutic approach with specific protocols and monitoring requirements.</p></div><div class="bg-success-green bg-opacity-10 border border-success-green rounded-lg p-4"><h4 class="font-semibold text-success-green mb-2">Lifestyle</h4><p class="text-sm text-neutral-slate">Evidence-based therapeutic approach with specific protocols and monitoring requirements.</p></div>
+                                    </div>
+
+                                    <div class="bg-gray-50 p-6 rounded-lg">
+                                        <h4 class="font-semibold text-deep-navy mb-3">Treatment Goals</h4>
+                                        <ul class="text-sm text-neutral-slate space-y-2">
+                                            <li>• Symptom relief and improved quality of life</li>
+                                            <li>• Prevention of disease progression</li>
+                                            <li>• Reduction of cardiovascular events</li>
+                                            <li>• Optimization of long-term outcomes</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prognosis Section -->
+                        <div id="prognosis-section" class="section-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Prognosis</h2>
+
+                                <div class="space-y-6">
+                                    <div class="bg-gray-50 p-6 rounded-lg">
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Clinical Outcomes</h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <h4 class="font-semibold text-deep-navy mb-2">Prognostic Factors</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Disease severity and stage</li>
+                                                    <li>• Response to treatment</li>
+                                                    <li>• Presence of comorbidities</li>
+                                                    <li>• Patient adherence to therapy</li>
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-deep-navy mb-2">Monitoring</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-1">
+                                                    <li>• Regular clinical follow-up</li>
+                                                    <li>• Symptom assessment</li>
+                                                    <li>• Functional status evaluation</li>
+                                                    <li>• Biomarker monitoring</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                                        <h4 class="font-semibold text-warning-amber mb-2">Long-term Management</h4>
+                                        <p class="text-sm text-neutral-slate">
+                                            Coronary Artery Disease requires ongoing management and monitoring. Regular follow-up 
+                                            with healthcare providers is essential for optimal outcomes and prevention of complications.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../main.js"></script>
+    <script>
+        // Disorder-specific JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDisorderPage();
+        });
+
+        function initializeDisorderPage() {
+            // Section navigation
+            const sectionButtons = document.querySelectorAll('.section-nav-btn');
+            const sections = document.querySelectorAll('.section-content');
+
+            sectionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetSection = button.dataset.section + '-section';
+
+                    // Update button states
+                    sectionButtons.forEach(btn => {
+                        btn.classList.remove('bg-clinical-blue', 'text-white', 'font-semibold');
+                        btn.classList.add('text-neutral-slate', 'hover:bg-gray-100');
+                    });
+                    button.classList.add('bg-clinical-blue', 'text-white', 'font-semibold');
+                    button.classList.remove('text-neutral-slate', 'hover:bg-gray-100');
+
+                    // Show target section
+                    sections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    document.getElementById(targetSection).classList.remove('hidden');
+
+                    // Animate section
+                    anime({
+                        targets: `#${targetSection}`,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        easing: 'easeOutCubic'
+                    });
+                });
+            });
+
+            // Initialize first section
+            document.getElementById('overview-section').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>v>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Major</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Diabetes Mellitus</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        Increases CAD risk by 2-3 fold in men and 3-7 fold in women. Considered a CAD equivalent.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Moderate</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Physical Inactivity</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        Sedentary lifestyle increases CAD risk by 50%. Regular exercise reduces risk by 25-30%.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Moderate</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Obesity</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        BMI >30 kg/m² increases risk, particularly central obesity with waist circumference >40 inches (men) or >35 inches (women).
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Non-Modifiable Risk Factors</h3>
+                                        <div class="space-y-4">
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Major</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Age</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        Risk increases significantly with age. Men >45 years, women >55 years (or post-menopausal).
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Major</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Sex</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        Men develop CAD earlier than women. Women's risk increases significantly after menopause.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Major</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Family History</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        First-degree relative with premature CAD (men <55 years, women <65 years) increases risk by 2-3 fold.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Moderate</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Race/Ethnicity</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        Higher prevalence in South Asian, African American, and Hispanic populations compared to Caucasians.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start">
+                                                <span class="risk-badge mr-3 mt-1">Moderate</span>
+                                                <div>
+                                                    <h4 class="font-semibold text-deep-navy">Genetic Factors</h4>
+                                                    <p class="text-sm text-neutral-slate">
+                                                        Specific genetic polymorphisms affecting lipid metabolism, inflammation, and thrombosis.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Diagnosis Section -->
+                        <div id="diagnosis-section" class="section-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Diagnosis</h2>
+                                
+                                <div class="space-y-8">
+                                    <!-- Initial Evaluation -->
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Initial Evaluation</h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-gray-50 p-6 rounded-lg">
+                                                <h4 class="font-semibold text-deep-navy mb-3">Clinical Assessment</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-2">
+                                                    <li>• Detailed symptom history</li>
+                                                    <li>• Risk factor assessment</li>
+                                                    <li>• Physical examination</li>
+                                                    <li>• 12-lead ECG</li>
+                                                    <li>• Chest X-ray</li>
+                                                    <li>• Basic laboratory tests</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-gray-50 p-6 rounded-lg">
+                                                <h4 class="font-semibold text-deep-navy mb-3">Laboratory Tests</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-2">
+                                                    <li>• Cardiac troponins (if ACS suspected)</li>
+                                                    <li>• Complete blood count</li>
+                                                    <li>• Comprehensive metabolic panel</li>
+                                                    <li>• Lipid profile</li>
+                                                    <li>• HbA1c (if diabetic risk)</li>
+                                                    <li>• Thyroid function tests</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Diagnostic Tests -->
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Diagnostic Tests</h3>
+                                        <div class="space-y-6">
+                                            <div class="treatment-tier first-line p-6">
+                                                <div class="flex items-center mb-4">
+                                                    <span class="bg-success-green text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">First-Line</span>
+                                                    <h4 class="text-lg font-semibold text-deep-navy">Exercise Stress Testing</h4>
+                                                </div>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Indications</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• Intermediate pre-test probability CAD</li>
+                                                            <li>• Evaluation of known CAD</li>
+                                                            <li>• Functional capacity assessment</li>
+                                                            <li>• Risk stratification</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Interpretation</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• ST depression ≥1mm = positive</li>
+                                                            <li>• Exercise duration &lt;5 METS = high risk</li>
+                                                            <li>• Hypotensive response = poor prognosis</li>
+                                                            <li>• Angina during test = high risk</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="treatment-tier second-line p-6">
+                                                <div class="flex items-center mb-4">
+                                                    <span class="bg-warning-amber text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">Second-Line</span>
+                                                    <h4 class="text-lg font-semibold text-deep-navy">Imaging Studies</h4>
+                                                </div>
+                                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                    <div class="bg-white p-4 rounded-lg">
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Stress Echo</h5>
+                                                        <p class="text-sm text-neutral-slate">
+                                                            Combines exercise/pharmacologic stress with echocardiography. 
+                                                            Wall motion abnormalities indicate ischemia.
+                                                        </p>
+                                                    </div>
+                                                    <div class="bg-white p-4 rounded-lg">
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Nuclear Stress</h5>
+                                                        <p class="text-sm text-neutral-slate">
+                                                            Myocardial perfusion imaging with SPECT or PET. 
+                                                            Perfusion defects indicate ischemia or scar.
+                                                        </p>
+                                                    </div>
+                                                    <div class="bg-white p-4 rounded-lg">
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Cardiac CT</h5>
+                                                        <p class="text-sm text-neutral-slate">
+                                                            Coronary CT angiography for anatomical assessment. 
+                                                            Calcium scoring for risk stratification.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Invasive Testing -->
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Invasive Testing</h3>
+                                        <div class="bg-gray-50 p-6 rounded-lg">
+                                            <h4 class="font-semibold text-deep-navy mb-3">Coronary Angiography</h4>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <h5 class="font-semibold text-deep-navy mb-2">Indications</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• High-risk stress test results</li>
+                                                        <li>• Unstable angina</li>
+                                                        <li>• STEMI or NSTEMI</li>
+                                                        <li>• Survivors of sudden cardiac death</li>
+                                                        <li>• Pre-operative assessment for high-risk surgery</li>
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <h5 class="font-semibold text-deep-navy mb-2">Significant Stenosis</h5>
+                                                    <ul class="text-sm text-neutral-slate space-y-1">
+                                                        <li>• ≥70% diameter stenosis = significant</li>
+                                                        <li>• ≥50% left main stenosis = significant</li>
+                                                        <li>• FFR ≤0.80 = functionally significant</li>
+                                                        <li>• iFR ≤0.89 = functionally significant</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Treatment Section -->
+                        <div id="treatment-section" class="section-content hidden">
+                            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Treatment</h2>
+                                
+                                <div class="space-y-8">
+                                    <!-- Lifestyle Modifications -->
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Lifestyle Modifications</h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-success-green bg-opacity-10 border border-success-green rounded-lg p-6">
+                                                <h4 class="font-semibold text-success-green mb-3">Dietary Changes</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-2">
+                                                    <li>• Mediterranean or DASH diet</li>
+                                                    <li>• Limit saturated fat to &lt;7% of calories</li>
+                                                    <li>• Limit trans fat to &lt;1% of calories</li>
+                                                    <li>• Increase fruits, vegetables, whole grains</li>
+                                                    <li>• Limit sodium to &lt;2,300mg daily</li>
+                                                    <li>• Moderate alcohol consumption only</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-success-green bg-opacity-10 border border-success-green rounded-lg p-6">
+                                                <h4 class="font-semibold text-success-green mb-3">Exercise Program</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-2">
+                                                    <li>• 150 minutes moderate aerobic activity weekly</li>
+                                                    <li>• 75 minutes vigorous activity weekly</li>
+                                                    <li>• Resistance training 2 days per week</li>
+                                                    <li>• Gradual progression in intensity</li>
+                                                    <li>• Cardiac rehabilitation post-MI</li>
+                                                    <li>• Stress testing before vigorous exercise</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Medical Therapy -->
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Medical Therapy</h3>
+                                        <div class="space-y-6">
+                                            <!-- Antiplatelet Therapy -->
+                                            <div class="treatment-tier first-line p-6">
+                                                <div class="flex items-center mb-4">
+                                                    <span class="bg-success-green text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">Essential</span>
+                                                    <h4 class="text-lg font-semibold text-deep-navy">Antiplatelet Therapy</h4>
+                                                </div>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Aspirin</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• Dose: 81mg daily (preferred)</li>
+                                                            <li>• Alternative: 325mg daily if needed</li>
+                                                            <li>• Lifelong therapy for all CAD patients</li>
+                                                            <li>• Reduces MI risk by 25-30%</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">P2Y12 Inhibitors</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• Clopidogrel 75mg daily</li>
+                                                            <li>• Ticagrelor 90mg BID</li>
+                                                            <li>• Prasugrel 10mg daily</li>
+                                                            <li>• Dual therapy post-ACS or stent</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Statins -->
+                                            <div class="treatment-tier first-line p-6">
+                                                <div class="flex items-center mb-4">
+                                                    <span class="bg-success-green text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">Essential</span>
+                                                    <h4 class="text-lg font-semibold text-deep-navy">Statins (HMG-CoA Reductase Inhibitors)</h4>
+                                                </div>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">High-Intensity Statins</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• Atorvastatin 40-80mg daily</li>
+                                                            <li>• Rosuvastatin 20-40mg daily</li>
+                                                            <li>• Reduce LDL-C by ≥50%</li>
+                                                            <li>• Target LDL-C &lt;70 mg/dL in very high risk</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Benefits</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• 25-35% LDL-C reduction</li>
+                                                            <li>• 20-30% reduction in CV events</li>
+                                                            <li>• Plaque stabilization</li>
+                                                            <li>• Anti-inflammatory effects</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Beta-Blockers -->
+                                            <div class="treatment-tier first-line p-6">
+                                                <div class="flex items-center mb-4">
+                                                    <span class="bg-success-green text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">Class I</span>
+                                                    <h4 class="text-lg font-semibold text-deep-navy">Beta-Blockers</h4>
+                                                </div>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Preferred Agents</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• Metoprolol succinate 25-200mg daily</li>
+                                                            <li>• Carvedilol 3.125-25mg BID</li>
+                                                            <li>• Bisoprolol 2.5-10mg daily</li>
+                                                            <li>• Titrate to resting HR 55-60 bpm</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="font-semibold text-deep-navy mb-2">Indications</h5>
+                                                        <ul class="text-sm text-neutral-slate space-y-1">
+                                                            <li>• Post-MI patients</li>
+                                                            <li>• Stable angina</li>
+                                                            <li>• Heart failure with reduced EF</li>
+                                                            <li>• Hypertension</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Revascularization -->
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Revascularization Strategies</h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="bg-gray-50 p-6 rounded-lg">
+                                                <h4 class="font-semibold text-deep-navy mb-3">Percutaneous Coronary Intervention (PCI)</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-2">
+                                                    <li>• Primary PCI for STEMI within 90 minutes</li>
+                                                    <li>• Elective PCI for high-risk anatomy</li>
+                                                    <li>• Drug-eluting stents preferred</li>
+                                                    <li>• Dual antiplatelet therapy 6-12 months</li>
+                                                    <li>• FFR-guided PCI for intermediate lesions</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="bg-gray-50 p-6 rounded-lg">
+                                                <h4 class="font-semibold text-deep-navy mb-3">Coronary Artery Bypass Graft (CABG)</h4>
+                                                <ul class="text-sm text-neutral-slate space-y-2">
+                                                    <li>• Left main disease (>50% stenosis)</li>
+                                                    <li>• Three-vessel disease with diabetes</li>
+                                                    <li>• Two-vessel disease with proximal LAD</li>
+                                                    <li>• SYNTAX score >22</li>
+                                                    <li>• Failed PCI or unsuitable anatomy</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional sections would continue here... -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../main.js"></script>
+    <script>
+        // Disorder-specific JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDisorderPage();
+        });
+        
+        function initializeDisorderPage() {
+            // Section navigation
+            const sectionButtons = document.querySelectorAll('.section-nav-btn');
+            const sections = document.querySelectorAll('.section-content');
+            
+            sectionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetSection = button.dataset.section + '-section';
+                    
+                    // Update button states
+                    sectionButtons.forEach(btn => {
+                        btn.classList.remove('bg-clinical-blue', 'text-white', 'font-semibold');
+                        btn.classList.add('text-neutral-slate', 'hover:bg-gray-100');
+                    });
+                    button.classList.add('bg-clinical-blue', 'text-white', 'font-semibold');
+                    button.classList.remove('text-neutral-slate', 'hover:bg-gray-100');
+                    
+                    // Show target section
+                    sections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    document.getElementById(targetSection).classList.remove('hidden');
+                    
+                    // Animate section
+                    anime({
+                        targets: `#${targetSection}`,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        easing: 'easeOutCubic'
+                    });
+                });
+            });
+            
+            // Initialize first section
+            document.getElementById('overview-section').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

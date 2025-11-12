@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Vein Thrombosis | CardioReference</title>
+    <meta name="description" content="Comprehensive information on Deep Vein Thrombosis including clinical presentation, diagnosis, treatment, and latest research.">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'clinical-blue': '#2563EB',
+                        'diagnostic-teal': '#0891B2',
+                        'alert-coral': '#DC2626',
+                        'warning-amber': '#D97706',
+                        'neutral-slate': '#475569',
+                        'light-gray': '#F1F5F9',
+                        'success-green': '#059669',
+                        'deep-navy': '#1E293B',
+                        'ecg-chartreuse': '#84CC16',
+                        'cardiac-purple': '#7C3AED',
+                        'imaging-orange': '#EA580C',
+                        'biomarker-rose': '#E11D48'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light-gray font-inter">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b-2 border-clinical-blue sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-playfair font-bold text-deep-navy">CardioReference</h1>
+                        <p class="text-xs text-neutral-slate">Professional Cardiology Resource</p>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="../index.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Home</a>
+                    <a href="../index.html#disorders" class="text-clinical-blue font-semibold">Disorders</a>
+                    <a href="../diagnostic-tools.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Diagnostic Tools</a>
+                    <a href="../treatment-protocols.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Treatment Protocols</a>
+                    <a href="../research.html" class="text-neutral-slate hover:text-clinical-blue transition-colors font-medium">Latest Research</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button id="search-toggle" class="p-2 text-neutral-slate hover:text-clinical-blue transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-white py-12 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-clinical-blue text-white mr-3">
+                            Thrombotic Disease
+                        </span>
+                        <span class="text-sm text-neutral-slate">Common • Moderate Severity</span>
+                    </div>
+
+                    <h1 class="text-4xl lg:text-5xl font-playfair font-bold text-deep-navy mb-6">
+                        Deep Vein Thrombosis
+                    </h1>
+
+                    <p class="text-xl text-neutral-slate leading-relaxed mb-6">
+                        Thrombus formation in deep venous system, most commonly lower extremities. Major risk factor for pulmonary embolism.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-light-gray rounded-lg p-4">
+                            <div class="text-2xl font-bold text-clinical-blue mb-1">1-3 per 1000 adults annually</div>
+                            <div class="text-sm text-neutral-slate">Incidence</div>
+                        </div>
+                        <div class="bg-light-gray rounded-lg p-4">
+                            <div class="text-2xl font-bold text-clinical-blue mb-1">Low with treatment</div>
+                            <div class="text-sm text-neutral-slate">Mortality</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <img src="../resources/dvt.png" alt="Deep Vein Thrombosis" class="w-full h-auto rounded-2xl shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-16 bg-light-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                <h2 class="text-3xl font-playfair font-bold text-deep-navy mb-6">Comprehensive Information</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Clinical Features</h3>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-deep-navy mb-2">Symptoms</h4>
+                                <ul class="text-sm text-neutral-slate space-y-1">
+                                    <li>• Leg Swelling</li><li>• Pain</li><li>• Warmth</li><li>• Erythema</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-deep-navy mb-2">Risk Factors</h4>
+                                <ul class="text-sm text-neutral-slate space-y-1">
+                                    <li>• Immobility</li><li>• Surgery</li><li>• Cancer</li><li>• Pregnancy</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-deep-navy mb-4">Management</h3>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-deep-navy mb-2">Diagnostic Tests</h4>
+                                <ul class="text-sm text-neutral-slate space-y-1">
+                                    <li>• Duplex Ultrasound</li><li>• D Dimer</li><li>• Venography</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-deep-navy mb-2">Treatment Options</h4>
+                                <ul class="text-sm text-neutral-slate space-y-1">
+                                    <li>• Anticoagulation</li><li>• Compression</li><li>• Intervention</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 class="text-xl font-semibold text-clinical-blue mb-3">Clinical Guidelines</h3>
+                    <p class="text-sm text-neutral-slate leading-relaxed">
+                        Management of Deep Vein Thrombosis should follow current evidence-based guidelines from major cardiovascular societies. 
+                        Treatment should be individualized based on patient characteristics, disease severity, and comorbidities. 
+                        Regular follow-up and monitoring are essential for optimal outcomes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <svg class="h-8 w-8 text-clinical-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <h3 class="text-2xl font-playfair font-bold">CardioReference</h3>
+                </div>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Professional cardiology resource providing comprehensive coverage of cardiovascular disorders, 
+                    diagnostic tools, and evidence-based treatment protocols for healthcare professionals.
+                </p>
+                <div class="border-t border-gray-600 pt-6">
+                    <p class="text-sm text-gray-400 mb-3">
+                        © 2024 CardioReference. Professional medical education resource. 
+                        <span class="text-clinical-blue">Evidence-based content updated regularly.</span>
+                    </p>
+                    <p class="text-sm text-gray-400 mb-3">
+                        Designed & Developed by <span class="text-clinical-blue font-semibold">Ritik Dhage</span>
+                    </p>
+                    <p class="text-xs text-gray-500 italic max-w-2xl mx-auto">
+                        ⚠️ <strong>Medical Disclaimer:</strong> This resource is for educational purposes only. The information provided is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals and follow your institution's protocols before making any clinical decisions. In case of medical emergency, contact emergency services immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../main.js"></script>
+</body>
+</html>
